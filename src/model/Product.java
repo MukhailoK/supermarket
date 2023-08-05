@@ -56,6 +56,7 @@ public class Product {
                 ", brand='" + brand + '\'' +
                 ", price=" + price +
                 ", expDate=" + expDate +
+                ", count=" + count +
                 '}';
     }
 

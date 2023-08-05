@@ -3,10 +3,7 @@ package dao;
 import model.Product;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class SupermarketImpl implements Supermarket {
@@ -14,6 +11,7 @@ public class SupermarketImpl implements Supermarket {
 
     public SupermarketImpl() {
         products = new HashMap<>();
+
     }
 
     @Override
@@ -79,4 +77,27 @@ public class SupermarketImpl implements Supermarket {
     public int skuQuantity() {
         return products.size();
     }
+
+    @Override
+    public Iterator<Product> iterator() {
+        return new Iterator<>() {
+            private final List<Long> keyIterator = new ArrayList<>(products.keySet());
+            private int count;
+
+            @Override
+            public boolean hasNext() {
+                return count < keyIterator.size();
+            }
+
+            @Override
+            public Product next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException("No more products in the supermarket.");
+                }
+                long productId = keyIterator.get(count++);
+                return products.get(productId);
+            }
+        };
+    }
 }
+

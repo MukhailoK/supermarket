@@ -7,9 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -36,9 +34,7 @@ class SupermarketImplTest {
                 new Product(10_000_000_007L, "product7", "Category4", "Brand4", 4.20, now.plusWeeks(3)),
                 new Product(10_000_000_009L, "product9", "Category5", "Brand4", 9.20, now.plusMonths(4)),
                 new Product(10_000_000_010L, "product10", "Category6", "Brand5", 12.20, now.plusMonths(21))};
-        for (Product p : products) {
-            supermarket.addProduct(p);
-        }
+        Arrays.stream(products).forEach(p -> supermarket.addProduct(p));
 
     }
 
@@ -148,4 +144,24 @@ class SupermarketImplTest {
         assertEquals(products.length - 1, supermarket.skuQuantity());
     }
 
+    @Test
+    void testIterator() {
+        assertTrue(supermarket.iterator().hasNext());
+        for (Product product : supermarket) {
+            System.out.println(product);
+        }
+    }
+
+    @Test
+    void testIteratorEmptySupermarket() {
+        supermarket = new SupermarketImpl();
+        assertFalse(supermarket.iterator().hasNext());
+        assertThrows(NoSuchElementException.class, () -> {
+            Iterator<Product> iterator = supermarket.iterator();
+            while (iterator.hasNext()) {
+                Product product = iterator.next();
+            }
+            iterator.next();
+        });
+    }
 }

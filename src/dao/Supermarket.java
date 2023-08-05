@@ -2,7 +2,9 @@ package dao;
 
 import model.Product;
 
-public interface Supermarket {
+import java.util.Iterator;
+
+public interface Supermarket extends Iterable<Product> {
     boolean addProduct(Product product);
 
     Product removeProduct(long barCode);
