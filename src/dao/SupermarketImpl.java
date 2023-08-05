@@ -3,10 +3,7 @@ package dao;
 import model.Product;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -76,15 +73,15 @@ public class SupermarketImpl implements Supermarket {
         return products.size();
     }
 
-    //    @Override
+//    @Override
 //    public Iterator<Product> iterator() {
 //        return new Iterator<>() {
-//            private final List<Long> productsKeys = new ArrayList<>(products.keySet());
+//            private final List<Product> productsValues = new ArrayList<>(products.values());
 //            private int count;
 //
 //            @Override
 //            public boolean hasNext() {
-//                return count < productsKeys.size();
+//                return count < productsValues.size();
 //            }
 //
 //            @Override
@@ -92,14 +89,13 @@ public class SupermarketImpl implements Supermarket {
 //                if (!hasNext()) {
 //                    throw new NoSuchElementException("No more products in the supermarket.");
 //                }
-//                long productId = productsKeys.get(count++);
-//                return products.get(productId);
+//                return productsValues.get(count++);
 //            }
 //        };
 //    }
+
     @Override
     public Iterator<Product> iterator() {
         return products.values().iterator();
     }
 }
-
