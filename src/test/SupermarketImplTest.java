@@ -48,6 +48,7 @@ class SupermarketImplTest {
         Product expected = new Product(10_000_000_011L, "product11", "Category6", "Brand5", 13.20, now.plusMonths(21));
         assertTrue(supermarket.addProduct(expected));
         assertEquals(expected, supermarket.findByBarCode(expected.getBarCode()));
+        assertEquals(10, supermarket.skuQuantity());
     }
 
     @Test
@@ -55,12 +56,6 @@ class SupermarketImplTest {
         Product product = new Product(10_000_000_010L, "product10", "Category6", "Brand5", 12.20, now.plusMonths(21));
         assertTrue(supermarket.addProduct(product));
         assertEquals(2, supermarket.findByBarCode(product.getBarCode()).getCount());
-    }
-
-    @Test
-    void testAddDifferentProductAtPresentBarCode() {
-        Product product = new Product(10_000_000_009L, "product10", "Category6", "Brand5", 12.20, now.plusMonths(21));
-        assertFalse(supermarket.addProduct(product));
     }
 
     @Test

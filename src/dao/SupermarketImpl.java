@@ -3,15 +3,18 @@ package dao;
 import model.Product;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SupermarketImpl implements Supermarket {
     private Map<Long, Product> products;
 
     public SupermarketImpl() {
         products = new HashMap<>();
-
     }
 
     @Override
@@ -21,11 +24,7 @@ public class SupermarketImpl implements Supermarket {
         } else if (!products.containsKey(product.getBarCode())) {
             products.put(product.getBarCode(), product);
             return true;
-        } else if (products.containsKey(product.getBarCode())
-                && products.get(product.getBarCode()).getBrand().equals(product.getBrand())
-                && products.get(product.getBarCode()).getCategory().equals(product.getCategory())
-                && products.get(product.getBarCode()).getName().equals(product.getName())
-                && products.get(product.getBarCode()).getPrice() == product.getPrice()) {
+        } else if (products.containsKey(product.getBarCode())) {
             products.get(product.getBarCode()).add();
             return true;
         } else {
@@ -41,8 +40,8 @@ public class SupermarketImpl implements Supermarket {
     public Product sellOne(long barCode) {
         if (products.get(barCode).getCount() == 0) {
             throw new NoSuchElementException("No product in supermarket");
-        }else
-        products.get(barCode).setCount(products.get(barCode).getCount() - 1);
+        } else
+            products.get(barCode).setCount(products.get(barCode).getCount() - 1);
         return products.get(barCode);
     }
 
@@ -67,13 +66,9 @@ public class SupermarketImpl implements Supermarket {
     }
 
     private Iterable<Product> findByPredicate(Predicate<Product> predicate) {
-        List<Product> res = new ArrayList<>();
-        for (Map.Entry<Long, Product> entry : products.entrySet()) {
-            if (predicate.test(entry.getValue())) {
-                res.add(entry.getValue());
-            }
-        }
-        return res;
+        return products.values().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -81,26 +76,30 @@ public class SupermarketImpl implements Supermarket {
         return products.size();
     }
 
+    //    @Override
+//    public Iterator<Product> iterator() {
+//        return new Iterator<>() {
+//            private final List<Long> productsKeys = new ArrayList<>(products.keySet());
+//            private int count;
+//
+//            @Override
+//            public boolean hasNext() {
+//                return count < productsKeys.size();
+//            }
+//
+//            @Override
+//            public Product next() {
+//                if (!hasNext()) {
+//                    throw new NoSuchElementException("No more products in the supermarket.");
+//                }
+//                long productId = productsKeys.get(count++);
+//                return products.get(productId);
+//            }
+//        };
+//    }
     @Override
     public Iterator<Product> iterator() {
-        return new Iterator<>() {
-            private final List<Long> productsKeys = new ArrayList<>(products.keySet());
-            private int count;
-
-            @Override
-            public boolean hasNext() {
-                return count < productsKeys.size();
-            }
-
-            @Override
-            public Product next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No more products in the supermarket.");
-                }
-                long productId = productsKeys.get(count++);
-                return products.get(productId);
-            }
-        };
+        return products.values().iterator();
     }
 }
 
