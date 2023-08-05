@@ -94,6 +94,12 @@ class SupermarketImplTest {
     }
 
     @Test
+    void sellNoProduct() {
+        supermarket.sellOne(products[0].getBarCode());
+        assertThrows(NoSuchElementException.class, () -> supermarket.sellOne(products[0].getBarCode()));
+    }
+
+    @Test
     void findByCategory() {
         List<Product> expected = new ArrayList<>(List.of(
                 new Product(10_000_000_003L, "product3", "Category2", "Brand2", 3.30, now.minusDays(2)),

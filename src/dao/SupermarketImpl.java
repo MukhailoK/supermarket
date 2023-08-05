@@ -39,6 +39,9 @@ public class SupermarketImpl implements Supermarket {
     }
 
     public Product sellOne(long barCode) {
+        if (products.get(barCode).getCount() == 0) {
+            throw new NoSuchElementException("No product in supermarket");
+        }else
         products.get(barCode).setCount(products.get(barCode).getCount() - 1);
         return products.get(barCode);
     }
@@ -81,12 +84,12 @@ public class SupermarketImpl implements Supermarket {
     @Override
     public Iterator<Product> iterator() {
         return new Iterator<>() {
-            private final List<Long> keyIterator = new ArrayList<>(products.keySet());
+            private final List<Long> productsKeys = new ArrayList<>(products.keySet());
             private int count;
 
             @Override
             public boolean hasNext() {
-                return count < keyIterator.size();
+                return count < productsKeys.size();
             }
 
             @Override
@@ -94,7 +97,7 @@ public class SupermarketImpl implements Supermarket {
                 if (!hasNext()) {
                     throw new NoSuchElementException("No more products in the supermarket.");
                 }
-                long productId = keyIterator.get(count++);
+                long productId = productsKeys.get(count++);
                 return products.get(productId);
             }
         };
