@@ -48,12 +48,13 @@ class SupermarketImplTest {
         Product expected = new Product(10_000_000_011L, "product11", "Category6", "Brand5", 13.20, now.plusMonths(21));
         assertTrue(supermarket.addProduct(expected));
         assertEquals(expected, supermarket.findByBarCode(expected.getBarCode()));
+
         assertEquals(10, supermarket.skuQuantity());
     }
 
     @Test
     void testAddSameProduct() {
-        Product product = new Product(10_000_000_010L, "product10", "Category6", "Brand5", 12.20, now.plusMonths(21));
+        Product product = products[9];
         assertTrue(supermarket.addProduct(product));
         assertEquals(2, supermarket.findByBarCode(product.getBarCode()).getCount());
     }
@@ -65,7 +66,7 @@ class SupermarketImplTest {
 
     @Test
     void removeProduct() {
-        Product expected = new Product(10_000_000_001L, "product1", "Category1", "Brand1", 2.20, now.minusDays(1));
+        Product expected = products[0];
         assertEquals(expected, supermarket.removeProduct(expected.getBarCode()));
         assertEquals(8, supermarket.skuQuantity());
     }
@@ -77,13 +78,13 @@ class SupermarketImplTest {
 
     @Test
     void findProduct() {
-        Product expected = new Product(10_000_000_001L, "product1", "Category1", "Brand1", 2.20, now.minusDays(1));
+        Product expected = products[0];
         assertEquals(expected, supermarket.findByBarCode(expected.getBarCode()));
     }
 
     @Test
     void sellProduct() {
-        Product expected = new Product(10_000_000_007L, "product7", "Category4", "Brand4", 4.20, now.plusWeeks(3));
+        Product expected = products[7];
         assertEquals(expected, supermarket.sellOne(expected.getBarCode()));
         assertEquals(1, supermarket.findByBarCode(expected.getBarCode()).getCount());
     }
@@ -96,11 +97,7 @@ class SupermarketImplTest {
 
     @Test
     void findByCategory() {
-        List<Product> expected = new ArrayList<>(List.of(
-                new Product(10_000_000_003L, "product3", "Category2", "Brand2", 3.30, now.minusDays(2)),
-                new Product(10_000_000_004L, "product4", "Category2", "Brand2", 5.20, now.minusDays(3)),
-                new Product(10_000_000_005L, "product5", "Category2", "Brand3", 6.20, now.minusDays(5))
-        ));
+        List<Product> expected = new ArrayList<>(List.of(products[2], products[3], products[4]));
         expected.sort(Comparator.comparingLong(Product::getBarCode));
         List<Product> sortedActual = Stream.of(supermarket.findByCategory("Category2"))
                 .flatMap(products -> StreamSupport.stream(products.spliterator(), false))
@@ -112,8 +109,8 @@ class SupermarketImplTest {
     @Test
     void findByBrand() {
         List<Product> expected = new ArrayList<>(List.of(
-                new Product(10_000_000_003L, "product3", "Category2", "Brand2", 3.30, now.minusDays(2)),
-                new Product(10_000_000_004L, "product4", "Category2", "Brand2", 5.20, now.minusDays(3))
+                products[2],
+                products[3]
         ));
         expected.sort(Comparator.comparingLong(Product::getBarCode));
         List<Product> sortedActual = Stream.of(supermarket.findByBrand("Brand2"))
@@ -125,13 +122,7 @@ class SupermarketImplTest {
 
     @Test
     void findProductByExpiredDate() {
-        List<Product> expected = new ArrayList<>(List.of(
-                new Product(10_000_000_001L, "product1", "Category1", "Brand1", 2.20, now.minusDays(1)),
-                new Product(10_000_000_003L, "product3", "Category2", "Brand2", 3.30, now.minusDays(2)),
-                new Product(10_000_000_004L, "product4", "Category2", "Brand2", 5.20, now.minusDays(3)),
-                new Product(10_000_000_005L, "product5", "Category2", "Brand3", 6.20, now.minusDays(5)),
-                new Product(10_000_000_006L, "product6", "Category3", "Brand3", 1.20, now.minusDays(2))
-        ));
+        List<Product> expected = new ArrayList<>(List.of(products[0], products[2], products[3], products[4], products[5]));
         expected.sort(Comparator.comparingLong(Product::getBarCode));
         List<Product> sortedActual = Stream.of(supermarket.findProductByExpiredDate())
                 .flatMap(products -> StreamSupport.stream(products.spliterator(), false))
